@@ -1,0 +1,164 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{TrailGuard TW: A Pre-Hike Decision Agent for Mountain Safety (A--F)\\
+{\footnotesize \textsuperscript{*}Note: Sub-titles are not captured in Xplore and
+should not be used}
+\thanks{Identify applicable funding agency here. If none, delete this.}
+}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Given Name Surname}
+\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
+\textit{name of organization (of Aff.)}\\
+City, Country \\
+email address or ORCID}
+}
+
+\maketitle
+
+\begin{abstract}
+The hiking population in Taiwan continues to grow, but mountain risks have not declined accordingly. Statistics from the National Fire Agency, Ministry of the Interior show that from 2015 to 2024, a total of 3,450 mountain accidents occurred nationwide, of which 1,263 cases (37\%) were "lost on trail," making it the leading accident type. This paper proposes TrailGuard TW, a pre-hike decision agent for Taiwan's mountain areas, adopting a hybrid architecture where "LLM is responsible for understanding and interpretation, and the Python engine is responsible for computation and verification," combined with a Temporal Knowledge Graph and Hybrid RAG to output a pre-hike decision package that is traceable, auditable, and correctable. The study plans 120 evaluation cases, using CSR, FSR, EGR and other metrics to evaluate system performance in multi-constraint hiking planning tasks, with particular attention to reducing the "false sense of safety" (False-Safe Rate).
+\end{abstract}
+
+\begin{IEEEkeywords}
+TrailGuard TW, mountain safety, pre-hike decision, LLM, Temporal Knowledge Graph, Hybrid RAG, constraint verification
+\end{IEEEkeywords}
+
+\section{A. Attention Getter: Motivation}
+
+The hiking population in Taiwan continues to grow, but mountain risks have not declined accordingly. Statistics from the National Fire Agency, Ministry of the Interior show that from 2015 to 2024, a total of 3,450 mountain accidents occurred nationwide, of which 1,263 cases (37\%) were "lost on trail," making it the leading accident type; in 2025, the accident rate in three high-mountain national parks rose to 9 cases per 10,000 people, approximately 0.08--0.09\%, higher than 0.04--0.05\% during 2016--2019.
+
+Behind these data, hikers must make multiple high-risk decisions before departure due to fragmented information, changing trail conditions, insufficient physical fitness and weather assessment, and incomplete communication and emergency contact arrangements. Although the government has promoted offline maps, communication point markers, satellite positioning devices, and emergency contact systems, these measures are mostly "distributed tools"; hikers still lack a pre-hike decision interface that integrates route, weather, physical fitness, equipment, communication, evacuation, and emergency response.
+
+Getting lost is often not the result of a single map error, but the outcome of route selection, weather, team capability, retreat conditions, communication, and emergency contact arrangements not being checked simultaneously. Therefore, this study regards "lost accounts for 37\%" as a specific risk signal of pre-hike information integration failure and insufficient planning quality, rather than merely a statistical figure.
+
+\section{B. But: Research Gap}
+
+Existing hiking information is highly dispersed across government open data, trail classifications, weather forecasts, hiking communities, map services, and application systems. Users must independently compare route difficulty, water sources, weather windows, retreat points, communication coverage, equipment needs, and emergency contact arrangements; once information is inconsistent or missing, incorrect risk judgments may result.
+
+More importantly, although LLMs excel at understanding natural language and generating suggestions, they struggle to stably satisfy all conditions in multi-constraint, multi-step real-world planning tasks. The TravelPlanner benchmark shows that GPT-4-Turbo achieves a final pass rate of only 0.6\% in travel planning tasks that must simultaneously handle transportation, accommodation, dining, attractions, and multiple constraints; subsequent studies also point out that LLMs often fail to continuously track constraints, use tools correctly, or generate executable plans.
+
+Therefore, hiking planning cannot rely solely on "generative suggestions." If the system cannot verify whether distance, time, elevation, weather, communication, resupply, and retreat conditions are all satisfied, it may lead users toward itineraries that appear reasonable but are actually unsafe. The core issue of hiking safety systems is not "whether an itinerary can be generated," but "whether, under multiple risks and uncertainties, users can be prevented from receiving a false sense of safety."
+
+\section{C. Cure: TrailGuard TW}
+
+To narrow the above gap, this study proposes \textbf{TrailGuard TW}, a pre-hike decision agent for Taiwan's mountain areas. The system does not take "generating an itinerary" as the endpoint, but outputs a traceable, auditable, and correctable \textbf{pre-hike decision package}, including:
+
+\begin{itemize}
+\item Route and alternative plans: main route, retreat route, key junctions, and time estimates.
+\item Risk assessment: weather, physical fitness, elevation, water sources, equipment, snow season, or landslide risks.
+\item Communication and safety arrangements: communication points, offline maps, satellite positioning devices, and emergency contact information.
+\item Constraint verification results: which conditions are satisfied, which conflict, and which information is insufficient.
+\item Evidence and sources: data sources, update times, and reasoning basis for each suggestion.
+\end{itemize}
+
+When a user proposes needs such as "two days one night, four people, budget, rainy day contingency, requires communication points," TrailGuard TW should not only reply with an itinerary but also clearly indicate: which constraints can be satisfied, which conflicts need adjustment, which data cannot yet be verified, and provide traceable modification suggestions. When risks reach the red-flag threshold, the system should prioritize outputting \textbf{NO-GO} or \textbf{CONDITIONAL}, rather than forcing the generation of an apparently feasible itinerary.
+
+The core value of TrailGuard TW is not to let AI "decide whether to go hiking for you," but to ensure that every judgment before going hiking can be seen, audited, and corrected.
+
+\section{D. Development: Method Architecture}
+
+TrailGuard TW adopts a hybrid architecture where "\textbf{LLM is responsible for understanding and interpretation, and the Python engine is responsible for computation and verification}." The LLM is responsible for parsing user requirements, converting vague semantics into structured conditions, and explaining risks and suggestions; the Python engine is responsible for executing computable checks such as distance, elevation gain, time, resupply, weather thresholds, communication points, and retreat feasibility.
+
+At the knowledge layer, the system uses \textbf{Temporal Knowledge Graph} and \textbf{Hybrid RAG}. The temporal knowledge graph organizes information such as trails, trail conditions, restrictions, weather, accidents, facilities, and communication points in an "entity--relation--time" manner, enabling the system to distinguish "currently valid" from "historical information"; Hybrid RAG combines semantic retrieval, structured queries, and rule checking to reduce temporal confusion and evidence noise that may result from pure vector retrieval.
+
+Therefore, the technical contribution of TrailGuard TW is not "using LLM," but establishing a verifiable hiking planning pipeline: natural language requirements $\to$ structured constraints $\to$ temporal knowledge graph and hybrid retrieval $\to$ Python computation and constraint verification $\to$ traceable decision package. Hiking information is highly time-sensitive, such as typhoon closures, snow season restrictions, trail maintenance, water source conditions, and communication point updates; if the system cannot handle time, it may use outdated information.
+
+\section{E. Experiments: Evaluation Design}
+
+This study plans to establish \textbf{120 evaluation cases}, covering different mountain area types, team sizes, weather scenarios, physical conditions, trip durations, budgets, communication needs, and emergency evacuation scenarios. The evaluation will adopt five comparison groups:
+
+\begin{enumerate}
+\item Itinerary generated directly using LLM only
+\item LLM plus general RAG
+\item LLM plus Hybrid RAG
+\item LLM plus Temporal KG and Hybrid RAG
+\item TrailGuard TW full system: LLM, Temporal KG, Hybrid RAG, and Python constraint verification engine
+\end{enumerate}
+
+The main evaluation metrics include:
+
+\begin{table}[htbp]
+\caption{Main evaluation metrics and design targets}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Metric} & \textbf{Meaning} & \textbf{Design Target} \\
+\hline
+CSR (Constraint Satisfaction Rate) & Proportion of all explicit and implicit safety constraints satisfied simultaneously & 85\% \\
+\hline
+EGR (Evidence-Grounded Rate) & Whether suggestion content can be mapped to verifiable sources and timestamps & 95\% \\
+\hline
+FSR (False-Safe Rate) & Proportion of unsafe, infeasible, or information-insufficient schemes misjudged as safe schemes & Below 2\% \\
+\hline
+Hiking-time MAE & Itinerary time estimation error & Within 20\% \\
+\hline
+SUS & User subjective evaluation of system usability and trustworthiness & Above 75 points \\
+\hline
+\end{tabular}
+\label{tab:metrics}
+\end{center}
+\end{table}
+
+FSR is the key differentiating metric of this study. General LLM evaluations focus on "whether the itinerary is completed," but hiking safety systems focus more on "false sense of safety": for example, the system fails to detect infeasible retreat, underestimates weather risks, or misjudges no-communication areas as communicable. This makes the study more safety-oriented and ethically valuable.
+
+\section{F. Findings: Expected Outcomes}
+
+The expected output of this study is not claimed completed experimental results, but clearly marked \textbf{design targets and verifiable hypotheses}. It is expected that TrailGuard TW will outperform baselines relying solely on LLM or general RAG in CSR, FSR, evidence traceability rate, and risk coverage; at the same time, when constraint conflicts occur, the system should actively point out the source of conflicts and propose correction schemes, rather than generating apparently complete but unverifiable itineraries.
+
+The paradigm contribution of this study lies in elevating hiking safety from "information query" to "auditable pre-hike decision-making." The system does not replace hikers' judgment, on-site judgment, or emergency response, but provides a traceable, correctable, and jointly auditable decision foundation before departure. This positioning also aligns with the government's "responsible hiking" direction: pre-hike planning, physical fitness assessment, offline maps, communication equipment, and emergency contact systems should jointly constitute a safety chain.
+
+\section{Expected Contributions and Academic Value}
+
+\begin{table}[htbp]
+\caption{Expected contributions and academic value}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Aspect} & \textbf{Expected Contribution} & \textbf{Academic and Practical Value} \\
+\hline
+Safety practice & Establish a pre-hike decision package integrating route, weather, physical fitness, communication, retreat, and emergency contact & Transform dispersed hiking safety information into auditable and executable decision support, responding to the accident structure where getting lost accounts for 37\% \\
+\hline
+AI architecture & Propose the division of labor "LLM understanding and interpretation, Python engine verification" for hiking planning & Respond to the limitation of low success rate and easy constraint violation of LLM in multi-constraint planning, and borrow empirical directions from formal verification and solver integration \\
+\hline
+Knowledge engineering & Establish mountain area information integration methods for Temporal KG and Hybrid RAG & Handle temporal changes in trails, restrictions, weather, trail conditions, and communication points, reducing errors caused by outdated information and retrieval noise \\
+\hline
+Evaluation methods & Propose CSR, FSR, EGR, and risk coverage rate & Shift from "itinerary generation quality" to "safety-critical decision quality," supplementing safety aspects not sufficiently covered by general travel planning benchmarks \\
+\hline
+Policy alignment & Support offline maps, communication points, satellite positioning devices, and emergency contact systems & Integrate existing government safety measures into a user-understandable pre-hike process, rather than requiring users to piece together information themselves \\
+\hline
+Extensibility & Architecture extensible to disaster relief, outdoor education, rural medical referral, or disaster response & Establish general methods for verifiable, traceable, multi-constraint decision packages, not limited to a single hiking application \\
+\hline
+\end{tabular}
+\label{tab:contributions}
+\end{center}
+\end{table}
+
+\section{Academic Value}
+
+The academic value of this study can be summarized in four points:
+
+\begin{itemize}
+\item \textbf{Problem value:} Translates "getting lost," which accounts for the highest proportion of mountain accidents in Taiwan, into a pre-hike information integration and multi-constraint decision problem that AI systems can intervene in; this makes the research have clear public safety and policy implications.
+\item \textbf{Method value:} Not letting LLM answer alone, but establishing a hybrid architecture of LLM, Temporal KG, Hybrid RAG, and computable verification engine; this direction is consistent with recent research combining LLM with constraint solvers to improve the correctness of complex planning.
+\item \textbf{Evaluation value:} Proposes a hiking safety evaluation framework with CSR and FSR as the core; especially FSR can capture the risk of "system giving users a false sense of safety," supplementing the insufficiency of traditional travel planning benchmarks that overemphasize completion rate.
+\item \textbf{Practical value:} Outputs traceable pre-hike decision packages, enabling government, hikers, guides, and emergency contacts to jointly review decision bases; this is more compliant with accountability requirements in high-risk outdoor scenarios than black-box AI suggestions.
+\end{itemize}
+
+\section{Conclusion Directly Usable for Presentations}
+
+\begin{quote}
+The value of TrailGuard TW is not to let AI "decide whether to go hiking for you," but to ensure that every judgment before going hiking can be seen, audited, and corrected. When getting lost accounts for 37\% of mountain accidents in Taiwan, and LLMs still struggle to stably satisfy all conditions in complex multi-constraint planning, what we need is not more fluent itinerary text, but a pre-hike decision system that integrates time, risk, evidence, and constraints.
+\end{quote}
+
+\end{document}
