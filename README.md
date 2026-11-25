@@ -1,5 +1,12 @@
 # AIOT_DIC4
 
+📷 **本次提供的圖片**：請將截圖檔案放入本目錄，並用下方語法嵌入（範例）：
+```markdown
+![過程截圖](overleaf-screenshot.png)
+```
+
+🔗 **Overleaf 專案**：https://www.overleaf.com/project/6b06bc71056e29946462642e
+
 TrailGuard TW: A Pre-Hike Decision Agent for Mountain Safety (A–F)
 
 This project proposes **TrailGuard TW**, a pre-hike decision agent for Taiwan's mountain areas. It adopts a hybrid architecture where **"LLM is responsible for understanding and interpretation, and the Python engine is responsible for computation and verification"**, combined with a **Temporal Knowledge Graph** and **Hybrid RAG** to output a pre-hike decision package that is traceable, auditable, and correctable.
