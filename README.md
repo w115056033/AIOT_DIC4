@@ -33,3 +33,33 @@ TrailGuard TW, mountain safety, pre-hike decision, LLM, Temporal Knowledge Graph
 ## License
 
 This project is part of the AIOT DIC4 coursework.
+
+## Sync to GitHub & Overleaf
+
+When you modify files in this project, use the provided sync scripts to push changes to both **GitHub** and **Overleaf** at once.
+
+### Scripts
+
+| Script | Platform | Usage |
+|--------|----------|-------|
+| `sync-all.ps1` | Windows PowerShell | `.\sync-all.ps1 "your commit message"` |
+| `sync-all.sh` | Linux/macOS | `./sync-all.sh "your commit message"` |
+
+### What the script does
+
+1. `git add .`
+2. `git commit -m "<message>"`
+3. `git push origin master` (to `https://github.com/w115056033/AIOT_DIC4.git`)
+4. `olcli push main2.tex --project 6b06bc71056e29946462642e` (to Overleaf)
+
+### Prerequisites
+
+- `git` installed and remote `origin` configured
+- `olcli` (Overleaf CLI) installed and logged in (`olcli whoami`)
+- Overleaf project ID: `6b06bc71056e29946462642e`
+
+> `main2.tex` has removed `xeCJK` and all Chinese content. Compile with **pdfLaTeX**, not XeLaTeX.
+
+### OpenCode skill
+
+Skill definition: `.opencode/skills/sync-github-overleaf.md`
