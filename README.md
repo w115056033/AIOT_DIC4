@@ -1,10 +1,9 @@
 # AIOT_DIC4
 
 📷 **本次提供的圖片**：請將截圖檔案放入本目錄，並用下方語法嵌入（範例）：
-```markdown
-<img width="1540" height="792" alt="image" src="https://github.com/user-attachments/assets/0d1ac7da-71b8-40be-967f-08ba48749b77" />
 
-```
+<img width="1540" height="792" alt="image" src="https://github.com/user-attachments/assets/01a2bf57-f57e-4893-ba99-c05d8d3fd884" />
+
 
 🔗 **Overleaf 專案**：https://www.overleaf.com/project/6b06bc71056e29946462642e
 
